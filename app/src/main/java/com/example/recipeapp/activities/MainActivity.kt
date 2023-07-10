@@ -9,6 +9,7 @@
     import androidx.appcompat.app.AppCompatDelegate
     import androidx.core.view.GravityCompat
     import androidx.fragment.app.Fragment
+    import androidx.fragment.app.FragmentTransaction
     import com.example.recipeapp.R
     import com.example.recipeapp.databinding.ActivityMainBinding
     import com.example.recipeapp.fragments.FavouriteFragment
@@ -16,11 +17,12 @@
     import com.example.recipeapp.fragments.MealPlanFragment
     import com.example.recipeapp.fragments.ProfileFragment
     import com.example.recipeapp.fragments.ShoppingListFragment
-    import com.example.recipeapp.utils.Helper
 
     class MainActivity : AppCompatActivity() {
         private lateinit var binding: ActivityMainBinding
         private var previousMenuItem: MenuItem? = null
+        private lateinit var fragmentTransaction: FragmentTransaction
+
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             binding = ActivityMainBinding.inflate(layoutInflater)
@@ -31,18 +33,15 @@
         private fun init() {
             initTasks()
             setUpToolBar()
+            setUpHamburgerFunctionality()
             setUpHomeFragment()
             initListeners()
-            setUpHamburgerFunctionality()
         }
 
         private fun setUpHomeFragment() {
-            if(binding.navigationView.checkedItem?.itemId!= R.id.home) {
-                val fragmentTransaction = supportFragmentManager.beginTransaction()
                 fragmentTransaction.replace(R.id.frameLayout, HomeFragment()).commit()
                 supportActionBar?.title = "Home"
                 binding.navigationView.setCheckedItem(R.id.home)
-            }
         }
 
         private fun setUpHamburgerFunctionality() {
@@ -64,6 +63,7 @@
 
         private fun initTasks() {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            fragmentTransaction = supportFragmentManager.beginTransaction()
         }
 
         private fun initListeners() {

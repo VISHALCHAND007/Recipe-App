@@ -15,4 +15,5 @@
     <string name="apple_frangipan_tart">Apple Frangipan Tart</string>
     <string name="dessert">Dessert</string>
     <string name="add">Add</string>
+    <string name="error">Some error occurred</string>
 </resources>

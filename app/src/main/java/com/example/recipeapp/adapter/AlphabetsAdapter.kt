@@ -17,7 +17,7 @@ class AlphabetsAdapter(
 ) :
     RecyclerView.Adapter<AlphabetsAdapter.AlphabetsViewHolder>() {
     inner class AlphabetsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val binding: SampleLayoutAlphabetBinding = SampleLayoutAlphabetBinding.bind(itemView)
+        val binding = SampleLayoutAlphabetBinding.bind(itemView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlphabetsViewHolder {
@@ -35,6 +35,8 @@ class AlphabetsAdapter(
 
         if(selectedChar == mList[position]) {
             holder.binding.alphabetTv.background = ContextCompat.getDrawable(mContext, R.drawable.alphabet_selected)
+        } else {
+            holder.binding.alphabetTv.background = ContextCompat.getDrawable(mContext, R.drawable.alphabet_deselected)
         }
 
         //setting up on Click listener
