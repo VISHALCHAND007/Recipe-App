@@ -1,14 +1,18 @@
 package com.example.recipeapp.adapter
 
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.recipeapp.R
+import com.example.recipeapp.RecipeActivity
 import com.example.recipeapp.databinding.SampleLayoutMealBinding
 import com.example.recipeapp.models.MealsModel
+import com.example.recipeapp.utils.Helper
 
 class MealsAdapter(
     private val mList: ArrayList<MealsModel>?,
@@ -40,6 +44,16 @@ class MealsAdapter(
         } else {
             holder.binding.addTv.visibility = View.GONE
             holder.binding.favouriteImg.visibility = View.VISIBLE
+        }
+
+        //handling clicks
+        holder.binding.individualItemCl.setOnClickListener {
+            val bundle = Bundle()
+            val intent = Intent(mContext, RecipeActivity::class.java)
+            intent.putExtra(Helper.MEAL_ID, mList?.get(position)?.idMeal)
+//            bundle.
+//            intent.putExt
+            mContext.startActivity(intent)
         }
     }
 }

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/restaurantItemCl"
+    android:id="@+id/individualItemCl"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="10dp"
+        app:cardCornerRadius="@dimen/_10dp"
         app:cardUseCompatPadding="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -20,15 +20,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingHorizontal="10dp"
+            android:paddingHorizontal="@dimen/_10dp"
             android:weightSum="6">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="100dp"
-                android:layout_marginVertical="10dp"
+                android:layout_marginVertical="@dimen/_10dp"
                 android:layout_weight="1.5"
-                app:cardCornerRadius="15dp"
+                app:cardCornerRadius="@dimen/_15dp"
                 app:cardElevation="0dp">
 
                 <ImageView
@@ -44,9 +44,10 @@
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_weight="4.5"
+                android:paddingBottom="@dimen/_10dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -68,8 +69,8 @@
 
                 <ImageView
                     android:id="@+id/favouriteImg"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/_30dp"
+                    android:layout_height="@dimen/_30dp"
                     android:layout_gravity="end"
                     android:visibility="gone"
                     android:layout_marginTop="8dp"

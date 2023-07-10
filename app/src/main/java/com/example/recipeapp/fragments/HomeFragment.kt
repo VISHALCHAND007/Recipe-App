@@ -3,7 +3,6 @@ package com.example.recipeapp.fragments
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,59 +49,65 @@ class HomeFragment : Fragment() {
 
     private fun getRecipes() {
         binding.progressBar.visibility = View.VISIBLE
+        binding.dishRv.visibility = View.GONE
         mList = ArrayList()
         volleyRequests.makeGetRequest(requireContext(), Url.MEAL_URL + "?f=$selectedChar")
         volleyRequests.setVolleyRequest(object : VolleyRequests.VolleyRequestsListener {
             override fun onDataLoaded(jsonObject: JSONObject) {
 
-                if (jsonObject.has("meals") && jsonObject.getJSONArray("meals").length() > 0) {
-                    for (i in 0 until jsonObject.getJSONArray("meals").length()) {
-                        val jsonObj = jsonObject.getJSONArray("meals").getJSONObject(i)
+                if (jsonObject.has("meals") && !jsonObject.get("meals").equals(null)) {
+                    if(jsonObject.getJSONArray("meals").length() > 0) {
+                        for (i in 0 until jsonObject.getJSONArray("meals").length()) {
+                            val jsonObj = jsonObject.getJSONArray("meals").getJSONObject(i)
 
-                        val idMeal = jsonObj.getString("idMeal")
-                        val strMeal = jsonObj.getString("strMeal")
-                        val strArea = jsonObj.getString("strArea")
-                        val strCategory = jsonObj.getString("strCategory")
-                        val strMealThumb = jsonObj.getString("strMealThumb")
+                            val idMeal = jsonObj.getString("idMeal")
+                            val strMeal = jsonObj.getString("strMeal")
+                            val strArea = jsonObj.getString("strArea")
+                            val strCategory = jsonObj.getString("strCategory")
+                            val strMealThumb = jsonObj.getString("strMealThumb")
 
-                        // Access the instructions separately since it is a multiline string
-                        val strInstructions = jsonObj.getString("strInstructions")
+                            // Access the instructions separately since it is a multiline string
+                            val strInstructions = jsonObj.getString("strInstructions")
 
-                        // Create an Ingredients list
-                        val ingredients = mutableListOf<Pair<String, String>>()
-                        for (j in 1..20) {
-                            val ingredient = jsonObj.getString("strIngredient$j")
-                            val measure = jsonObj.getString("strMeasure$j")
-                            if (!ingredient.isNullOrEmpty() && !measure.isNullOrEmpty()) {
-                                ingredients.add(Pair(ingredient, measure))
+                            // Create an Ingredients list
+                            val ingredients = mutableListOf<Pair<String, String>>()
+                            for (j in 1..20) {
+                                val ingredient = jsonObj.getString("strIngredient$j")
+                                val measure = jsonObj.getString("strMeasure$j")
+                                if (!ingredient.isNullOrEmpty() && !measure.isNullOrEmpty()) {
+                                    ingredients.add(Pair(ingredient, measure))
+                                }
                             }
-                        }
 
-                        // Create the MealsModel object
-                        val mealsModel = MealsModel(
-                            null,
-                            idMeal,
-                            strArea,
-                            strCategory,
-                            null,
-                            null,
-                            null,
-                            strInstructions,
-                            strMeal,
-                            strMealThumb,
-                            null,
-                            null,
-                            null,
-                            ingredients
-                        )
-                        mList.add(mealsModel)
+                            // Create the MealsModel object
+                            val mealsModel = MealsModel(
+                                null,
+                                idMeal,
+                                strArea,
+                                strCategory,
+                                null,
+                                null,
+                                null,
+                                strInstructions,
+                                strMeal,
+                                strMealThumb,
+                                null,
+                                null,
+                                null,
+                                ingredients
+                            )
+                            mList.add(mealsModel)
+                        }
                     }
                     binding.progressBar.visibility = View.GONE
                 } else {
-                    Helper().makeToast(requireContext(), resources.getString(R.string.error))
+                    binding.dishRv.visibility = View.GONE
+                    binding.noResultFoundTv.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.GONE
                 }
-                Log.e("here", mList.size.toString())
                 if (mList.size > 0) {
+                    binding.dishRv.visibility = View.VISIBLE
+                    binding.noResultFoundTv.visibility = View.GONE
                     setData()
                 }
             }

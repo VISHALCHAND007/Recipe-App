@@ -6,6 +6,7 @@ import android.widget.Toast
 class Helper {
     companion object {
         var alphabets: ArrayList<String> = ArrayList()
+        const val MEAL_ID = "MEAL_ID"
     }
     fun generateAlphabets() {
         alphabets = ArrayList()

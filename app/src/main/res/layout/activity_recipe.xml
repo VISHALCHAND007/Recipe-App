@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/_10dp"
+    android:orientation="vertical"
+    tools:context=".RecipeActivity">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="0dp"
+        android:layout_gravity="center_horizontal"
+        app:cardCornerRadius="@dimen/_10dp"
+        app:cardElevation="1dp">
+
+        <ImageView
+            android:layout_width="@dimen/_300dp"
+            android:layout_height="@dimen/_300dp"
+            android:src="@drawable/chef"
+            android:contentDescription="@null"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/lightGrey"
+        app:tabIndicator="@color/grey"
+        app:tabIndicatorColor="@color/colorAccent"
+        android:layout_marginTop="@dimen/_10dp">
+
+<!--        <com.google.android.material.tabs.TabItem-->
+<!--            android:id="@+id/ingredient"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/ingredient"/>-->
+
+<!--        <com.google.android.material.tabs.TabItem-->
+<!--            android:id="@+id/recipe"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/recipe"/>-->
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <TextView
+        android:id="@+id/recipeTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:layout_marginTop="@dimen/_10dp"
+        android:textSize="@dimen/_16sp"
+        android:textStyle="italic"/>
+
+</LinearLayout>
