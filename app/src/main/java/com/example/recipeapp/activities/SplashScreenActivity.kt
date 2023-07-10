@@ -26,7 +26,7 @@ class SplashScreenActivity : AppCompatActivity() {
         Handler(mainLooper).postDelayed({
             val homeIntent = Intent(this@SplashScreenActivity, MainActivity::class.java)
             startActivity(homeIntent)
-        }, 4000)
+        }, 3000)
     }
 
     private fun startAnimation() {

@@ -4,5 +4,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="colorAccent">#009688</color>
     <color name="colorPrimaryDark">#08564F</color>
-    <color name="lightGrey">#E3E3E3</color>
+    <color name="lightGrey">#F2EFEF</color>
+    <color name="grey">#ABA3A3</color>
+    <color name="selectOn">#4CD961</color>
+    <color name="selectOff">#338F41</color>
 </resources>
