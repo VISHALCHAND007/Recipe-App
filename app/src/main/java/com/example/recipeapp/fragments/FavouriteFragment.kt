@@ -8,21 +8,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.recipeapp.activities.MainActivity
 import com.example.recipeapp.adapter.FavouriteAdapter
 import com.example.recipeapp.databinding.FragmentFavouriteBinding
 import com.example.recipeapp.room.FavouriteDao
 import com.example.recipeapp.room.FavouriteDatabase
 import com.example.recipeapp.room.FavouriteEntity
+import com.example.recipeapp.viewModel.FavouriteViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class FavouriteFragment : Fragment() {
     private lateinit var binding: FragmentFavouriteBinding
     private lateinit var adapter: FavouriteAdapter
-    private lateinit var dao: FavouriteDao
     private lateinit var mContext: Context
+    private lateinit var viewModel: FavouriteViewModel
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,23 +38,23 @@ class FavouriteFragment : Fragment() {
 
     private fun getData() {
         mContext = requireContext()
+        viewModel = ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]
+
         binding.favouriteRv.layoutManager = LinearLayoutManager(requireContext())
-        lifecycleScope.launch(Dispatchers.IO) {
-            dao = FavouriteDatabase.getDatabaseInstance(mContext).favouriteDao()
-        }
-        Handler(Looper.myLooper()!!).postDelayed({
-            dao.getAll().observe(viewLifecycleOwner) {
-                checkDataExists(it)
-                adapter = FavouriteAdapter(requireContext(), it.reversed(), object : FavouriteAdapter.OnClick {
+        viewModel.allData.observe(viewLifecycleOwner) {
+            checkDataExists(it)
+            adapter = FavouriteAdapter(
+                requireContext(),
+                it.reversed(),
+                object : FavouriteAdapter.OnClick {
                     override fun onFavouriteImgClick(favouriteEntity: FavouriteEntity) {
                         lifecycleScope.launch(Dispatchers.IO) {
-                            dao.delete(favouriteEntity)
+                            viewModel.delete(favouriteEntity)
                         }
                     }
                 })
-                binding.favouriteRv.adapter = adapter
-            }
-        }, 1000)
+            binding.favouriteRv.adapter = adapter
+        }
     }
 
     private fun checkDataExists(list: List<FavouriteEntity>) {

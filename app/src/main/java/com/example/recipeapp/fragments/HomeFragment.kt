@@ -3,14 +3,12 @@ package com.example.recipeapp.fragments
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.recipeapp.R
@@ -18,14 +16,15 @@ import com.example.recipeapp.adapter.AlphabetsAdapter
 import com.example.recipeapp.adapter.MealsAdapter
 import com.example.recipeapp.databinding.FragmentHomeBinding
 import com.example.recipeapp.models.MealsModel
-import com.example.recipeapp.room.FavouriteDatabase
 import com.example.recipeapp.room.FavouriteEntity
 import com.example.recipeapp.utils.Helper
 import com.example.recipeapp.utils.InternetManager
 import com.example.recipeapp.utils.Url
 import com.example.recipeapp.utils.VolleyRequests
+import com.example.recipeapp.viewModel.FavouriteViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 
 class HomeFragment : Fragment() {
@@ -38,7 +37,7 @@ class HomeFragment : Fragment() {
     private lateinit var mealsAdapter: MealsAdapter
     private lateinit var mList: ArrayList<MealsModel>
     private lateinit var mContext: Context
-//    lateinit var dao: FavouriteDao
+    lateinit var viewModel: FavouriteViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,24 +54,6 @@ class HomeFragment : Fragment() {
         setAlphabets()
         initListeners()
         getRecipes()
-    }
-
-    private fun checkItem(idMeal: String): Boolean {
-        var isPresent: Boolean = false
-        var list: List<FavouriteEntity> = ArrayList()
-        lifecycleScope.launch(Dispatchers.IO) {
-            val dao = FavouriteDatabase.getDatabaseInstance(requireContext()).favouriteDao()
-            list = dao.checkExist(idMeal)
-        }
-        Handler(Looper.myLooper()!!).postDelayed(
-            {
-                if (list.isEmpty()) {
-                    isPresent = false
-                } else {
-                    isPresent = true
-                }
-            },1000)
-        return isPresent
     }
 
     private fun getRecipes() {
@@ -107,6 +88,15 @@ class HomeFragment : Fragment() {
                                         ingredients.add(Pair(ingredient, measure))
                                     }
                                 }
+                                var exists = false
+                               val job = lifecycleScope.launch(Dispatchers.Default) {
+                                   exists = checkExist(idMeal)
+                               }
+                                runBlocking {
+                                    job.join()
+                                }
+
+
                                 // Create the MealsModel object
                                 val mealsModel = MealsModel(
                                     idMeal,
@@ -114,7 +104,9 @@ class HomeFragment : Fragment() {
                                     strInstructions,
                                     strMeal,
                                     strMealThumb,
-                                    ingredients
+                                    ingredients,
+                                    exists,
+                                false
                                 )
                                 mList.add(mealsModel)
                             }
@@ -141,25 +133,29 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private suspend fun checkExist(idMeal: String): Boolean {
+        return viewModel.checkExist(idMeal)
+    }
+
     private fun setData() {
         mealsAdapter =
             MealsAdapter(mList, mContext, isPlanMealSetTrue, object : MealsAdapter.OnClick {
                 override fun onFavouriteClick(favouriteEntity: FavouriteEntity) {
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        val dao =
-                            FavouriteDatabase.getDatabaseInstance(requireContext()).favouriteDao()
+                    val job = lifecycleScope.launch(Dispatchers.IO) {
 
-                        val isPresent = dao.checkExist(favouriteEntity.recipeId)
-                        if (isPresent.isEmpty()) {
+                        val isPresent = viewModel.checkExist(favouriteEntity.recipeId)
+                        if (!isPresent) {
                             //insert fav
-                            dao.insert(favouriteEntity)
-
+                            viewModel.insert(favouriteEntity)
                         } else {
                             //remove fav
-
-                            dao.delete(favouriteEntity)
+                            viewModel.delete(favouriteEntity)
                         }
                     }
+                    runBlocking {
+                        job.join()
+                    }
+                    getRecipes()
                 }
 
                 override fun onAddClick() {
@@ -176,6 +172,8 @@ class HomeFragment : Fragment() {
         //initializing alphabets
         Helper().generateAlphabets()
         mContext = requireContext()
+        viewModel = ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]
+
 
         alphabets = Helper.alphabets
         volleyRequests = VolleyRequests()

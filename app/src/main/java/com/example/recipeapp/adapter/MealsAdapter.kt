@@ -11,7 +11,6 @@ import com.example.recipeapp.R
 import com.example.recipeapp.RecipeActivity
 import com.example.recipeapp.databinding.SampleLayoutMealBinding
 import com.example.recipeapp.models.MealsModel
-import com.example.recipeapp.room.FavouriteDatabase
 import com.example.recipeapp.room.FavouriteEntity
 import com.example.recipeapp.utils.Helper
 
@@ -48,18 +47,18 @@ class MealsAdapter(
             holder.binding.addTv.visibility = View.GONE
             holder.binding.favouriteImg.visibility = View.VISIBLE
         }
-//        val isPresent = FavouriteDatabase.getDatabaseInstance(mContext).favouriteDao().checkExist(item!!.idMeal)
-//        //setting heart
-//        if(isPresent.isNotEmpty()) {
-//            holder.binding.favouriteImg.setImageResource(R.drawable.heart)
-//        } else {
-//            holder.binding.favouriteImg.setImageResource(R.drawable.heart_outlined)
-//        }
+        val isPresent = item!!.isFavourite
+        //setting heart
+        if(isPresent) {
+            holder.binding.favouriteImg.setImageResource(R.drawable.heart)
+        } else {
+            holder.binding.favouriteImg.setImageResource(R.drawable.heart_outlined)
+        }
 
         //handling clicks
         holder.binding.individualItemCl.setOnClickListener {
             val intent = Intent(mContext, RecipeActivity::class.java)
-            intent.putExtra(Helper.MEAL_NAME, item!!.strMeal)
+            intent.putExtra(Helper.MEAL_NAME, item.strMeal)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             mContext.startActivity(intent)
         }
@@ -67,7 +66,7 @@ class MealsAdapter(
         holder.binding.favouriteImg.setOnClickListener {
 
             val favouriteEntity = FavouriteEntity(
-                item!!.idMeal,
+                item.idMeal,
                 item.strMeal,
                 item.strCategory,
                 item.strMealThumb,

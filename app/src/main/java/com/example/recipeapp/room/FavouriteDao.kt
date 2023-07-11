@@ -18,5 +18,5 @@ interface FavouriteDao {
     fun getAll(): LiveData<List<FavouriteEntity>>
 
     @Query ("Select * from fav_table where recipe_id = :recipeId")
-    fun checkExist(recipeId: String): List<FavouriteEntity>
+    fun checkExist(recipeId: String): FavouriteEntity?
 }

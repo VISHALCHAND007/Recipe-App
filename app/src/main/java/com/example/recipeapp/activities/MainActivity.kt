@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.recipeapp.R
 import com.example.recipeapp.databinding.ActivityMainBinding
 import com.example.recipeapp.fragments.FavouriteFragment
@@ -16,6 +17,7 @@ import com.example.recipeapp.fragments.HomeFragment
 import com.example.recipeapp.fragments.MealPlanFragment
 import com.example.recipeapp.fragments.ProfileFragment
 import com.example.recipeapp.fragments.ShoppingListFragment
+import com.example.recipeapp.viewModel.FavouriteViewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
