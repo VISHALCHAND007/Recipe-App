@@ -1,23 +1,29 @@
 package com.example.recipeapp
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.recipeapp.adapter.IngredientsAdapter
 import com.example.recipeapp.databinding.ActivityRecipeBinding
 import com.example.recipeapp.utils.Helper
+import com.example.recipeapp.utils.InternetManager
+import com.example.recipeapp.utils.Url
+import com.example.recipeapp.utils.VolleyRequests
 import com.google.android.material.tabs.TabLayout
+import org.json.JSONObject
 
 class RecipeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRecipeBinding
-    private lateinit var mealImg: String
     private lateinit var mealName: String
+    private lateinit var mealImg: String
     private lateinit var mealRecipe: String
-    private lateinit var ingredientsList: List<Pair<String, String>>
+    private lateinit var ingredientsList: ArrayList<Pair<String, String>>
     private var isRecipeTabSelected: Boolean = false
+    private lateinit var volleyRequests: VolleyRequests
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRecipeBinding.inflate(layoutInflater)
@@ -30,21 +36,57 @@ class RecipeActivity : AppCompatActivity() {
     }
 
     private fun initTasks() {
+        //initialization
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        ingredientsList = ArrayList()
+        volleyRequests = VolleyRequests()
+
+        //get intent values
         val intent = intent.extras
         if(intent != null) {
-            mealImg = intent.getString(Helper.MEAL_IMG, "")
             mealName = intent.getString(Helper.MEAL_NAME, "")
-            mealRecipe = intent.getString(Helper.MEAL_RECIPE, "")
-            val bundle = intent.getBundle(Helper.BUNDLE)
-            ingredientsList = bundle?.getSerializable(Helper.MEAL_INGREDIENTS) as List<Pair<String, String>>
-
-            setData()
+            getData()
         } else {
             Helper().makeToast(this@RecipeActivity, resources.getString(R.string.error))
             finish()
         }
-        //initialization
-        ingredientsList = ArrayList()
+
+    }
+
+    private fun getData() {
+        if(mealName.isNotEmpty() && mealName != " ") {
+            if(InternetManager().checkInternet(this@RecipeActivity)) {
+                volleyRequests.makeGetRequest(this@RecipeActivity, "${Url.MEAL_SEARCH}$mealName")
+                volleyRequests.setVolleyRequest(object: VolleyRequests.VolleyRequestsListener{
+                    override fun onDataLoaded(jsonObject: JSONObject) {
+                        if(jsonObject.has("meals")) {
+                            if(jsonObject.getString("meals").isNotEmpty()) {
+                                val json = jsonObject.getJSONArray("meals").getJSONObject(0)
+                                mealImg = json.getString("strMealThumb")
+                                mealRecipe = json.getString("strInstructions")
+
+                                for (j in 1..20) {
+                                    val ingredient = json.getString("strIngredient$j")
+                                    val measure = json.getString("strMeasure$j")
+                                    if (!ingredient.isNullOrEmpty() && !measure.isNullOrEmpty()) {
+                                        ingredientsList.add(Pair(ingredient, measure))
+                                    }
+                                }
+                                binding.progressRl.visibility = View.GONE
+                                setData()
+                            }
+                        }
+                    }
+
+                    override fun onError(e: Exception) {
+
+                    }
+
+                })
+            } else {
+                InternetManager().showAlertDialog(this@RecipeActivity)
+            }
+        }
     }
 
     private fun setData() {
@@ -52,9 +94,6 @@ class RecipeActivity : AppCompatActivity() {
         Glide.with(this@RecipeActivity).load(mealImg).into(binding.recipeImg)
         setIngredients()
         binding.recipeTv.text = mealRecipe
-        Handler(mainLooper).postDelayed({
-            binding.progressRl.visibility = View.GONE
-        },2000)
     }
 
     private fun setIngredients() {

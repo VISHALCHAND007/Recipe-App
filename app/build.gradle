@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -28,11 +29,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
 }
 
@@ -56,5 +57,18 @@ dependencies {
     //circular imageView
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     
-    //room
+    //room database
+    dependencies {
+        // Room for simple persistence with an ORM
+        ext {
+            roomVersion = "2.1.0"
+        }
+
+        dependencies {
+            // Room for simple persistence with an ORM
+            //noinspection GradleDependency
+            implementation "androidx.room:room-runtime:$roomVersion"
+            kapt "androidx.room:room-compiler:$roomVersion"
+        }
+    }
 }

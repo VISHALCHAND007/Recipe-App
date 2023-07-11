@@ -8,16 +8,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.recipeapp.R
 import com.example.recipeapp.adapter.AlphabetsAdapter
 import com.example.recipeapp.adapter.MealsAdapter
 import com.example.recipeapp.databinding.FragmentHomeBinding
 import com.example.recipeapp.models.MealsModel
+import com.example.recipeapp.room.FavouriteDatabase
+import com.example.recipeapp.room.FavouriteEntity
 import com.example.recipeapp.utils.Helper
 import com.example.recipeapp.utils.InternetManager
 import com.example.recipeapp.utils.Url
 import com.example.recipeapp.utils.VolleyRequests
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 
 class HomeFragment : Fragment() {
@@ -30,6 +35,7 @@ class HomeFragment : Fragment() {
     private lateinit var mealsAdapter: MealsAdapter
     private lateinit var mList: ArrayList<MealsModel>
     private lateinit var mContext: Context
+//    lateinit var dao: FavouriteDao
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,6 +54,16 @@ class HomeFragment : Fragment() {
         getRecipes()
     }
 
+    private fun checkItem(idMeal: String): Boolean {
+        var isPresent: Boolean = false
+        lifecycleScope.launch(Dispatchers.IO) {
+            val dao = FavouriteDatabase.getDatabaseInstance(requireContext()).favouriteDao()
+            val list = dao.checkExist(idMeal)
+            isPresent = list.isNotEmpty()
+        }
+        return isPresent
+    }
+
     private fun getRecipes() {
         if (InternetManager().checkInternet(requireContext())) {
             binding.progressBar.visibility = View.VISIBLE
@@ -64,7 +80,7 @@ class HomeFragment : Fragment() {
 
                                 val idMeal = jsonObj.getString("idMeal")
                                 val strMeal = jsonObj.getString("strMeal")
-                                val strArea = jsonObj.getString("strArea")
+                                jsonObj.getString("strArea")
                                 val strCategory = jsonObj.getString("strCategory")
                                 val strMealThumb = jsonObj.getString("strMealThumb")
 
@@ -81,22 +97,19 @@ class HomeFragment : Fragment() {
                                     }
                                 }
 
+                                //checking if item exists in favourite Db
+//                                val isPresent = checkItem(idMeal)
+
                                 // Create the MealsModel object
                                 val mealsModel = MealsModel(
-                                    null,
                                     idMeal,
-                                    strArea,
                                     strCategory,
-                                    null,
-                                    null,
-                                    null,
                                     strInstructions,
                                     strMeal,
                                     strMealThumb,
-                                    null,
-                                    null,
-                                    null,
-                                    ingredients
+                                    ingredients,
+                                    false,
+                                    false
                                 )
                                 mList.add(mealsModel)
                             }
@@ -124,7 +137,29 @@ class HomeFragment : Fragment() {
     }
 
     private fun setData() {
-        mealsAdapter = MealsAdapter(mList, mContext, isPlanMealSetTrue)
+        mealsAdapter = MealsAdapter(mList, mContext, isPlanMealSetTrue,object: MealsAdapter.OnClick{
+            override fun onFavouriteClick(favouriteEntity: FavouriteEntity) {
+               lifecycleScope.launch(Dispatchers.IO) {
+                   val dao = FavouriteDatabase.getDatabaseInstance(requireContext()).favouriteDao()
+
+                   val isPresent = dao.checkExist(favouriteEntity.recipeId)
+                   if(isPresent.isEmpty()) {
+                       //insert fav
+                       dao.insert(favouriteEntity)
+
+                   } else {
+                       //remove fav
+
+                       dao.delete(favouriteEntity)
+                   }
+               }
+            }
+
+            override fun onAddClick() {
+
+            }
+
+        })
         binding.dishRv.layoutManager =
             LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false)
         binding.dishRv.adapter = mealsAdapter
