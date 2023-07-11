@@ -14,7 +14,7 @@ class Helper {
     }
     fun generateAlphabets() {
         alphabets = ArrayList()
-        for(i in 'A'..'Z') {
+        for (i in 'A'..'Z') {
             alphabets.add(i.toString())
 
         }

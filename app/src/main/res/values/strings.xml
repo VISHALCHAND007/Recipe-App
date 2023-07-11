@@ -21,4 +21,21 @@
     <string name="recipe">Recipe</string>
     <string name="quantity">Quantity</string>
     <string name="ingredients">Ingredients</string>
+    <string name="user_name">User Name</string>
+    <string name="dietary_restrictions">Dietary Restrictions</string>
+    <string name="enter_dietary_restrictions">Enter dietary restrictions</string>
+    <string name="save">Save</string>
+    <string name="no_restrictions_added">No Restrictions Added</string>
+
+    <string-array name="cuisine">
+        <item>Select Cuisine</item>
+        <item>Indian</item>
+        <item>Chinese</item>
+        <item>South-Indian</item>
+        <item>Italian</item>
+        <item>French</item>
+        <item>Japanese</item>
+        <item>Thai</item>
+        <item>Mexican</item>
+    </string-array>
 </resources>

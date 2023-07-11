@@ -1,14 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="@dimen/_10dp"
     tools:context=".fragments.ProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/avatar"
+        app:civ_border_width="2dp"
+        android:layout_gravity="center_horizontal"
+        app:civ_border_color="#FF000000"/>
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/userNameTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/_10dp"
+        android:text="@string/user_name"
+        android:textSize="@dimen/_18sp"
+        android:textStyle="bold" />
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:background="@drawable/round_corner"
+       android:padding="@dimen/_10dp"
+       android:layout_gravity="center_vertical"
+       android:layout_marginTop="@dimen/_10dp"
+       android:orientation="horizontal">
+
+       <Spinner
+           android:id="@+id/cuisineTypeTv"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:elevation="1dp"
+           android:entries="@array/cuisine"
+           />
+
+   </LinearLayout>
+
+    <TextView
+        android:id="@+id/mealNameTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        android:text="@string/dietary_restrictions"
+        android:textSize="@dimen/_18sp"
+        android:textStyle="bold" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/dietaryRestrictionsRv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/sample_layout_restrictions"/>
+
+    <TextView
+        android:id="@+id/noDataTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        android:visibility="gone"
+        android:textColor="@color/grey"
+        android:text="@string/no_restrictions_added"
+        android:textSize="@dimen/_16sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/_10dp"
+        android:weightSum="1">
+
+        <EditText
+            android:id="@+id/inputEt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".75"
+            android:background="@drawable/searchbar_drawable"
+            android:hint="@string/enter_dietary_restrictions"
+            android:padding="@dimen/_10dp"
+            android:inputType="text"
+            android:autofillHints="@null" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/addBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".24"
+            android:backgroundTint="@color/colorAccent"
+            android:layout_marginStart="@dimen/_5dp"
+            android:text="@string/add"/>
+
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/saveBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_5dp"
+        android:layout_gravity="end"
+        android:paddingHorizontal="@dimen/_20dp"
+        android:layout_marginEnd="@dimen/_5dp"
+        android:backgroundTint="@color/colorAccent"
+        android:layout_marginTop="@dimen/_10dp"
+        android:text="@string/save"/>
+
+</LinearLayout>
