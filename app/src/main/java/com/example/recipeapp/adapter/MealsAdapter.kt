@@ -13,6 +13,7 @@ import com.example.recipeapp.RecipeActivity
 import com.example.recipeapp.databinding.SampleLayoutMealBinding
 import com.example.recipeapp.models.MealsModel
 import com.example.recipeapp.utils.Helper
+import java.io.Serializable
 
 class MealsAdapter(
     private val mList: ArrayList<MealsModel>?,
@@ -48,11 +49,16 @@ class MealsAdapter(
 
         //handling clicks
         holder.binding.individualItemCl.setOnClickListener {
+            val ingredients = mList?.get(position)?.ingredients
             val bundle = Bundle()
             val intent = Intent(mContext, RecipeActivity::class.java)
-            intent.putExtra(Helper.MEAL_ID, mList?.get(position)?.idMeal)
-//            bundle.
-//            intent.putExt
+            intent.putExtra(Helper.MEAL_NAME, mList?.get(position)?.strMeal)
+            intent.putExtra(Helper.MEAL_IMG, mList?.get(position)?.strMealThumb)
+            intent.putExtra(Helper.MEAL_RECIPE, mList?.get(position)?.strInstructions)
+            bundle.putSerializable(Helper.MEAL_INGREDIENTS,  ingredients as Serializable)
+            intent.putExtra(Helper.BUNDLE, bundle)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+
             mContext.startActivity(intent)
         }
     }

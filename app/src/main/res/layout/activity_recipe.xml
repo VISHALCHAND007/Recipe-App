@@ -4,56 +4,141 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/_10dp"
     android:orientation="vertical"
+    android:padding="@dimen/_10dp"
     tools:context=".RecipeActivity">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/progressRl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <ProgressBar
+            android:layout_width="@dimen/_50dp"
+            android:layout_height="@dimen/_50dp"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="0dp"
-        android:layout_gravity="center_horizontal"
-        app:cardCornerRadius="@dimen/_10dp"
-        app:cardElevation="1dp">
+        android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="@dimen/_300dp"
-            android:layout_height="@dimen/_300dp"
-            android:src="@drawable/chef"
-            android:contentDescription="@null"/>
+            android:id="@+id/backArrowIv"
+            android:layout_width="@dimen/_30dp"
+            android:layout_height="@dimen/_30dp"
+            android:layout_marginTop="@dimen/_5dp"
+            android:layout_marginEnd="@dimen/_15dp"
+            android:contentDescription="@null"
+            android:src="@drawable/left_arrow" />
 
-    </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:elevation="0dp"
+            app:cardCornerRadius="@dimen/_10dp"
+            app:cardElevation="1dp">
+
+            <ImageView
+                android:id="@+id/recipeImg"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_300dp"
+                android:contentDescription="@null"
+                android:src="@drawable/chef" />
+
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/recipeName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/_10dp"
+        android:text="@string/app_name"
+        android:textSize="@dimen/_20sp"
+        android:textStyle="bold" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10dp"
         android:background="@color/lightGrey"
         app:tabIndicator="@color/grey"
-        app:tabIndicatorColor="@color/colorAccent"
-        android:layout_marginTop="@dimen/_10dp">
+        app:tabIndicatorColor="@color/colorAccent">
 
-<!--        <com.google.android.material.tabs.TabItem-->
-<!--            android:id="@+id/ingredient"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="@string/ingredient"/>-->
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ingredient" />
 
-<!--        <com.google.android.material.tabs.TabItem-->
-<!--            android:id="@+id/recipe"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="@string/recipe"/>-->
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/recipe" />
 
     </com.google.android.material.tabs.TabLayout>
 
-    <TextView
-        android:id="@+id/recipeTv"
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        android:layout_marginTop="@dimen/_10dp"
-        android:textSize="@dimen/_16sp"
-        android:textStyle="italic"/>
+        android:layout_marginBottom="@dimen/_15dp">
+
+        <TextView
+            android:id="@+id/recipeTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_10dp"
+            android:text="@string/app_name"
+            android:textSize="@dimen/_16sp"
+            android:textStyle="italic"
+            android:visibility="gone" />
+
+    </ScrollView>
+
+
+    <TableLayout
+        android:id="@+id/tableIngredients"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10dp">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2"
+            tools:ignore="UselessParent">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/ingredients"
+                android:textSize="@dimen/_18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/quantity"
+                android:textSize="@dimen/_18sp"
+                android:textStyle="bold" />
+
+        </TableRow>
+
+    </TableLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ingredientsRv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

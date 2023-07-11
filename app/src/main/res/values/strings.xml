@@ -19,4 +19,6 @@
     <string name="no_result_found">No result found</string>
     <string name="ingredient">Ingredient</string>
     <string name="recipe">Recipe</string>
+    <string name="quantity">Quantity</string>
+    <string name="ingredients">Ingredients</string>
 </resources>
