@@ -11,7 +11,6 @@ import com.bumptech.glide.Glide
 import com.example.recipeapp.R
 import com.example.recipeapp.RecipeActivity
 import com.example.recipeapp.databinding.SampleLayoutMealBinding
-import com.example.recipeapp.room.FavouriteDao
 import com.example.recipeapp.room.FavouriteEntity
 import com.example.recipeapp.utils.Helper
 

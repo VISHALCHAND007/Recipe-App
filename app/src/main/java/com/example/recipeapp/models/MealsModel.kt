@@ -6,7 +6,5 @@ data class MealsModel(
     val strInstructions: String,
     val strMeal: String,
     val strMealThumb: String,
-    val ingredients: List<Pair<String, String>>,
-    val isFavourite: Boolean,
-    val isAddedToMealPlanner: Boolean
+    val ingredients: List<Pair<String, String>>
 )
