@@ -15,6 +15,7 @@ import com.example.recipeapp.adapter.MealsAdapter
 import com.example.recipeapp.databinding.FragmentHomeBinding
 import com.example.recipeapp.models.MealsModel
 import com.example.recipeapp.utils.Helper
+import com.example.recipeapp.utils.InternetManager
 import com.example.recipeapp.utils.Url
 import com.example.recipeapp.utils.VolleyRequests
 import org.json.JSONObject
@@ -48,74 +49,78 @@ class HomeFragment : Fragment() {
     }
 
     private fun getRecipes() {
-        binding.progressBar.visibility = View.VISIBLE
-        binding.dishRv.visibility = View.GONE
-        mList = ArrayList()
-        volleyRequests.makeGetRequest(requireContext(), Url.MEAL_URL + "?f=$selectedChar")
-        volleyRequests.setVolleyRequest(object : VolleyRequests.VolleyRequestsListener {
-            override fun onDataLoaded(jsonObject: JSONObject) {
+        if (InternetManager().checkInternet(requireContext())) {
+            binding.progressBar.visibility = View.VISIBLE
+            binding.dishRv.visibility = View.GONE
+            mList = ArrayList()
+            volleyRequests.makeGetRequest(requireContext(), Url.MEAL_URL + "?f=$selectedChar")
+            volleyRequests.setVolleyRequest(object : VolleyRequests.VolleyRequestsListener {
+                override fun onDataLoaded(jsonObject: JSONObject) {
 
-                if (jsonObject.has("meals") && !jsonObject.get("meals").equals(null)) {
-                    if(jsonObject.getJSONArray("meals").length() > 0) {
-                        for (i in 0 until jsonObject.getJSONArray("meals").length()) {
-                            val jsonObj = jsonObject.getJSONArray("meals").getJSONObject(i)
+                    if (jsonObject.has("meals") && !jsonObject.get("meals").equals(null)) {
+                        if (jsonObject.getJSONArray("meals").length() > 0) {
+                            for (i in 0 until jsonObject.getJSONArray("meals").length()) {
+                                val jsonObj = jsonObject.getJSONArray("meals").getJSONObject(i)
 
-                            val idMeal = jsonObj.getString("idMeal")
-                            val strMeal = jsonObj.getString("strMeal")
-                            val strArea = jsonObj.getString("strArea")
-                            val strCategory = jsonObj.getString("strCategory")
-                            val strMealThumb = jsonObj.getString("strMealThumb")
+                                val idMeal = jsonObj.getString("idMeal")
+                                val strMeal = jsonObj.getString("strMeal")
+                                val strArea = jsonObj.getString("strArea")
+                                val strCategory = jsonObj.getString("strCategory")
+                                val strMealThumb = jsonObj.getString("strMealThumb")
 
-                            // Access the instructions separately since it is a multiline string
-                            val strInstructions = jsonObj.getString("strInstructions")
+                                // Access the instructions separately since it is a multiline string
+                                val strInstructions = jsonObj.getString("strInstructions")
 
-                            // Create an Ingredients list
-                            val ingredients = mutableListOf<Pair<String, String>>()
-                            for (j in 1..20) {
-                                val ingredient = jsonObj.getString("strIngredient$j")
-                                val measure = jsonObj.getString("strMeasure$j")
-                                if (!ingredient.isNullOrEmpty() && !measure.isNullOrEmpty()) {
-                                    ingredients.add(Pair(ingredient, measure))
+                                // Create an Ingredients list
+                                val ingredients = mutableListOf<Pair<String, String>>()
+                                for (j in 1..20) {
+                                    val ingredient = jsonObj.getString("strIngredient$j")
+                                    val measure = jsonObj.getString("strMeasure$j")
+                                    if (!ingredient.isNullOrEmpty() && !measure.isNullOrEmpty()) {
+                                        ingredients.add(Pair(ingredient, measure))
+                                    }
                                 }
+
+                                // Create the MealsModel object
+                                val mealsModel = MealsModel(
+                                    null,
+                                    idMeal,
+                                    strArea,
+                                    strCategory,
+                                    null,
+                                    null,
+                                    null,
+                                    strInstructions,
+                                    strMeal,
+                                    strMealThumb,
+                                    null,
+                                    null,
+                                    null,
+                                    ingredients
+                                )
+                                mList.add(mealsModel)
                             }
-
-                            // Create the MealsModel object
-                            val mealsModel = MealsModel(
-                                null,
-                                idMeal,
-                                strArea,
-                                strCategory,
-                                null,
-                                null,
-                                null,
-                                strInstructions,
-                                strMeal,
-                                strMealThumb,
-                                null,
-                                null,
-                                null,
-                                ingredients
-                            )
-                            mList.add(mealsModel)
                         }
+                        binding.progressBar.visibility = View.GONE
+                    } else {
+                        binding.dishRv.visibility = View.GONE
+                        binding.noResultFoundTv.visibility = View.VISIBLE
+                        binding.progressBar.visibility = View.GONE
                     }
-                    binding.progressBar.visibility = View.GONE
-                } else {
-                    binding.dishRv.visibility = View.GONE
-                    binding.noResultFoundTv.visibility = View.VISIBLE
-                    binding.progressBar.visibility = View.GONE
+                    if (mList.size > 0) {
+                        binding.dishRv.visibility = View.VISIBLE
+                        binding.noResultFoundTv.visibility = View.GONE
+                        setData()
+                    }
                 }
-                if (mList.size > 0) {
-                    binding.dishRv.visibility = View.VISIBLE
-                    binding.noResultFoundTv.visibility = View.GONE
-                    setData()
-                }
-            }
 
-            override fun onError(e: Exception) {
-                Helper().makeToast(requireContext(), e.toString())
-            }
-        })
+                override fun onError(e: Exception) {
+                    Helper().makeToast(requireContext(), e.toString())
+                }
+            })
+        } else {
+            InternetManager().showAlertDialog(requireContext())
+        }
     }
 
     private fun setData() {
