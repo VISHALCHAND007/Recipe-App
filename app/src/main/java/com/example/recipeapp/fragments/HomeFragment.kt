@@ -59,7 +59,6 @@ class HomeFragment : Fragment() {
         lifecycleScope.launch(Dispatchers.IO) {
             val dao = FavouriteDatabase.getDatabaseInstance(requireContext()).favouriteDao()
             val list = dao.checkExist(idMeal)
-            isPresent = list.isNotEmpty()
         }
         return isPresent
     }

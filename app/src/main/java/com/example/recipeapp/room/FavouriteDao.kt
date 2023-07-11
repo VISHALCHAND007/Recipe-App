@@ -1,5 +1,6 @@
 package com.example.recipeapp.room
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -14,7 +15,7 @@ interface FavouriteDao {
     fun delete(favouriteEntity: FavouriteEntity)
 
     @Query ("Select * from fav_table")
-    fun getAll(): List<FavouriteEntity>
+    fun getAll(): LiveData<List<FavouriteEntity>>
 
     @Query ("Select * from fav_table where recipe_id = :recipeId")
     fun checkExist(recipeId: String): List<FavouriteEntity>
