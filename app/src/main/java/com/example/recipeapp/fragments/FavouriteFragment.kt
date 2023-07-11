@@ -29,13 +29,8 @@ class FavouriteFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentFavouriteBinding.inflate(inflater, container, false)
-        init()
-        return binding.root
-    }
-
-    private fun init() {
         getData()
-        initListeners()
+        return binding.root
     }
 
     private fun getData() {
@@ -71,9 +66,5 @@ class FavouriteFragment : Fragment() {
             binding.noResultFoundTv.visibility = View.VISIBLE
             binding.favouriteRv.visibility = View.GONE
         }
-    }
-
-    private fun initListeners() {
-
     }
 }
