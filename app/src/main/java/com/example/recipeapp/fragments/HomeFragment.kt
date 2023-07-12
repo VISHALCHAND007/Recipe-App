@@ -2,6 +2,7 @@ package com.example.recipeapp.fragments
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.recipeapp.R
+import com.example.recipeapp.activities.SearchActivity
 import com.example.recipeapp.adapter.AlphabetsAdapter
 import com.example.recipeapp.adapter.MealsAdapter
 import com.example.recipeapp.databinding.FragmentHomeBinding
@@ -223,6 +225,12 @@ class HomeFragment : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun initListeners() {
+        binding.searchEt.setOnClickListener {
+            val intent = Intent(requireContext(), SearchActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
+        }
+
         binding.planMealTv.setOnClickListener {
             if (isPlanMealSetTrue) {
                 binding.planMealTv.background =
