@@ -17,11 +17,13 @@ import com.example.recipeapp.adapter.MealsAdapter
 import com.example.recipeapp.databinding.FragmentHomeBinding
 import com.example.recipeapp.models.MealsModel
 import com.example.recipeapp.room.entity.FavouriteEntity
+import com.example.recipeapp.room.entity.ShoppingListEntity
 import com.example.recipeapp.utils.Helper
 import com.example.recipeapp.utils.InternetManager
 import com.example.recipeapp.utils.Url
 import com.example.recipeapp.utils.VolleyRequests
 import com.example.recipeapp.viewModel.FavouriteViewModel
+import com.example.recipeapp.viewModel.ShoppingListViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -38,6 +40,7 @@ class HomeFragment : Fragment() {
     private lateinit var mList: ArrayList<MealsModel>
     private lateinit var mContext: Context
     lateinit var viewModel: FavouriteViewModel
+    private lateinit var viewModelShopping: ShoppingListViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -89,9 +92,12 @@ class HomeFragment : Fragment() {
                                     }
                                 }
                                 var exists = false
-                               val job = lifecycleScope.launch(Dispatchers.Default) {
-                                   exists = checkExist(idMeal)
-                               }
+                                var isAdded = false
+                                val job = lifecycleScope.launch(Dispatchers.Default) {
+                                    exists = checkExist(idMeal)
+                                    isAdded = checkAdded(strMeal)
+
+                                }
                                 runBlocking {
                                     job.join()
                                 }
@@ -106,7 +112,7 @@ class HomeFragment : Fragment() {
                                     strMealThumb,
                                     ingredients,
                                     exists,
-                                false
+                                    isAdded
                                 )
                                 mList.add(mealsModel)
                             }
@@ -137,6 +143,10 @@ class HomeFragment : Fragment() {
         return viewModel.checkExist(idMeal)
     }
 
+    private suspend fun checkAdded(mealName: String): Boolean {
+        return viewModelShopping.checkExist(mealName)
+    }
+
     private fun setData() {
         mealsAdapter =
             MealsAdapter(mList, mContext, isPlanMealSetTrue, object : MealsAdapter.OnClick {
@@ -158,10 +168,23 @@ class HomeFragment : Fragment() {
                     getRecipes()
                 }
 
-                override fun onAddClick() {
+                override fun onAddClick(shoppingListEntity: ShoppingListEntity) {
+                    val job = lifecycleScope.launch(Dispatchers.IO) {
 
+                        val isAdded = viewModelShopping.checkExist(shoppingListEntity.mealName)
+                        if (!isAdded) {
+                            //insert fav
+                            viewModelShopping.insert(shoppingListEntity)
+                        } else {
+                            //remove fav
+                            viewModelShopping.delete(shoppingListEntity.mealName)
+                        }
+                    }
+                    runBlocking {
+                        job.join()
+                    }
+                    getRecipes()
                 }
-
             })
         binding.dishRv.layoutManager =
             LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false)
@@ -173,6 +196,7 @@ class HomeFragment : Fragment() {
         Helper().generateAlphabets()
         mContext = requireContext()
         viewModel = ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]
+        viewModelShopping = ViewModelProvider(requireActivity())[ShoppingListViewModel::class.java]
 
 
         alphabets = Helper.alphabets

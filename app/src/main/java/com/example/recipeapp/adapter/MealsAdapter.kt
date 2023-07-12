@@ -1,5 +1,6 @@
 package com.example.recipeapp.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import com.example.recipeapp.RecipeActivity
 import com.example.recipeapp.databinding.SampleLayoutMealBinding
 import com.example.recipeapp.models.MealsModel
 import com.example.recipeapp.room.entity.FavouriteEntity
+import com.example.recipeapp.room.entity.ShoppingListEntity
 import com.example.recipeapp.utils.Helper
 
 class MealsAdapter(
@@ -34,6 +36,7 @@ class MealsAdapter(
         return mList!!.size
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: MealsViewHolder, position: Int) {
         val item = mList?.get(position)
         holder.binding.mealNameTv.text = item?.strMeal
@@ -55,6 +58,13 @@ class MealsAdapter(
             holder.binding.favouriteImg.setImageResource(R.drawable.heart_outlined)
         }
 
+        val isAdded = item.isAddedToMealPlanner
+        if(isAdded) {
+            holder.binding.addTv.text = "Added"
+        } else {
+            holder.binding.addTv.text = "Add"
+        }
+
         //handling clicks
         holder.binding.individualItemCl.setOnClickListener {
             val intent = Intent(mContext, RecipeActivity::class.java)
@@ -74,9 +84,17 @@ class MealsAdapter(
             )
             onClick.onFavouriteClick(favouriteEntity)
         }
+        holder.binding.addTv.setOnClickListener {
+            val shoppingListEntity = ShoppingListEntity(
+                item.strMeal,
+                item.ingredients as ArrayList<Pair<String, String>>
+            )
+            holder.binding.addTv.text = "Added"
+            onClick.onAddClick(shoppingListEntity)
+        }
     }
     interface OnClick {
         fun onFavouriteClick(favouriteEntity: FavouriteEntity)
-        fun onAddClick()
+        fun onAddClick(shoppingListEntity: ShoppingListEntity)
     }
 }
