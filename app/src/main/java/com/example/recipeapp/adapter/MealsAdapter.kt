@@ -11,7 +11,7 @@ import com.example.recipeapp.R
 import com.example.recipeapp.RecipeActivity
 import com.example.recipeapp.databinding.SampleLayoutMealBinding
 import com.example.recipeapp.models.MealsModel
-import com.example.recipeapp.room.FavouriteEntity
+import com.example.recipeapp.room.entity.FavouriteEntity
 import com.example.recipeapp.utils.Helper
 
 class MealsAdapter(

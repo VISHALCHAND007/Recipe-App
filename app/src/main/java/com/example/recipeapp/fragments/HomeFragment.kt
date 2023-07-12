@@ -16,7 +16,7 @@ import com.example.recipeapp.adapter.AlphabetsAdapter
 import com.example.recipeapp.adapter.MealsAdapter
 import com.example.recipeapp.databinding.FragmentHomeBinding
 import com.example.recipeapp.models.MealsModel
-import com.example.recipeapp.room.FavouriteEntity
+import com.example.recipeapp.room.entity.FavouriteEntity
 import com.example.recipeapp.utils.Helper
 import com.example.recipeapp.utils.InternetManager
 import com.example.recipeapp.utils.Url

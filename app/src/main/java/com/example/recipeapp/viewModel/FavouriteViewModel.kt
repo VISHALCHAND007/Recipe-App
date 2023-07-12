@@ -5,8 +5,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.recipeapp.repository.FavouriteRepository
-import com.example.recipeapp.room.FavouriteDatabase
-import com.example.recipeapp.room.FavouriteEntity
+import com.example.recipeapp.room.database.RecipeDatabase
+import com.example.recipeapp.room.entity.FavouriteEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -15,7 +15,7 @@ class FavouriteViewModel(application: Application) : AndroidViewModel(applicatio
     private val repository: FavouriteRepository
 
     init {
-        val dao = FavouriteDatabase.getDatabaseInstance(application).favouriteDao()
+        val dao = RecipeDatabase.getDatabaseInstance(application).favouriteDao()
         repository = FavouriteRepository(dao)
         allData = repository.allData
     }

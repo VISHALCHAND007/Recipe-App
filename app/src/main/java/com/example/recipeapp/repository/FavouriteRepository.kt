@@ -1,8 +1,8 @@
 package com.example.recipeapp.repository
 
 import androidx.lifecycle.LiveData
-import com.example.recipeapp.room.FavouriteDao
-import com.example.recipeapp.room.FavouriteEntity
+import com.example.recipeapp.room.dao.FavouriteDao
+import com.example.recipeapp.room.entity.FavouriteEntity
 
 class FavouriteRepository(private val dao: FavouriteDao) {
     val allData: LiveData<List<FavouriteEntity>> = dao.getAll()

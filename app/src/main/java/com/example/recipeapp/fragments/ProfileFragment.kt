@@ -5,12 +5,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
+import com.example.recipeapp.adapter.RestrictionsAdapter
 import com.example.recipeapp.databinding.FragmentProfileBinding
+import com.example.recipeapp.room.entity.ProfileEntity
 import com.example.recipeapp.utils.Helper
+import com.example.recipeapp.viewModel.ProfileViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
     private lateinit var mListRestrictions: ArrayList<String>
+    private lateinit var viewModel: ProfileViewModel
+    private var doUpdate: Boolean = false
+    private lateinit var cuisineType: String
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -28,12 +40,32 @@ class ProfileFragment : Fragment() {
 
     private fun initTasks() {
         mListRestrictions = ArrayList()
+        binding.dietaryRestrictionsRv.layoutManager = GridLayoutManager(requireContext(), 2)
+        viewModel = ViewModelProvider(requireActivity())[ProfileViewModel::class.java]
+
+        val job = lifecycleScope.launch(Dispatchers.IO) {
+            val item = viewModel.getData()
+           mListRestrictions = item[0].dietaryRestrictions
+            cuisineType = item[0].cuisineType
+        }
+        runBlocking {
+            job.join()
+        }
         checkEmpty()
     }
 
     private fun checkEmpty() {
-        if(mListRestrictions.isEmpty()) {
+        if (mListRestrictions.isEmpty()) {
             binding.noDataTv.visibility = View.VISIBLE
+        } else {
+            binding.noDataTv.visibility = View.GONE
+            for(i in 0..8) {
+                if(binding.cuisineType.getItemAtPosition(i) == cuisineType) {
+                    binding.cuisineType.setSelection(i)
+                    break
+                }
+            }
+            setData()
         }
     }
 
@@ -43,17 +75,44 @@ class ProfileFragment : Fragment() {
         }
 
         binding.addBtn.setOnClickListener {
-            if(binding.inputEt.text.isNotEmpty()) {
-
+            if (binding.inputEt.text.isNotEmpty()) {
+                mListRestrictions.add(binding.inputEt.text.toString())
+                binding.inputEt.setText("")
+                checkEmpty()
+                setData()
             }
         }
 
         binding.saveBtn.setOnClickListener {
+            if (binding.cuisineType.selectedItem.equals("Select Cuisine")) {
+                Helper().makeToast(requireContext(), "Please select your preferred cuisine.")
+            } else if (mListRestrictions.isEmpty()) {
+                Helper().makeToast(requireContext(), "No dietary restrictions are added.")
+            } else {
+                val profileData =
+                    ProfileEntity(binding.cuisineType.selectedItem.toString(), mListRestrictions)
 
+                val job = lifecycleScope.launch(Dispatchers.IO) {
+                    val list = viewModel.getData()
+                    doUpdate = list.isNotEmpty()
+                }
+                runBlocking {
+                    job.join()
+                }
+
+
+                if (doUpdate) {
+                    viewModel.delete()
+                    viewModel.insert(profileData)
+                } else {
+                    viewModel.insert(profileData)
+                }
+                Helper().makeToast(requireContext(), "Saved")
+            }
         }
     }
-
-    private fun updateList() {
-
+    private fun setData() {
+        binding.dietaryRestrictionsRv.adapter =
+            RestrictionsAdapter(requireContext(), mListRestrictions)
     }
 }

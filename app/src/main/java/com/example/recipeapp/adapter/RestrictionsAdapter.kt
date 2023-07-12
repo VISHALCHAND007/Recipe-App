@@ -7,11 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recipeapp.R
+import com.example.recipeapp.databinding.SampleLayoutRestrictionsBinding
 
 class RestrictionsAdapter(private val mContext: Context?, private val list: ArrayList<String>): RecyclerView.Adapter<RestrictionsAdapter.RestrictionsViewHolder>() {
     inner class RestrictionsViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-
-
+        val binding = SampleLayoutRestrictionsBinding.bind(itemView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RestrictionsViewHolder {
@@ -25,10 +25,10 @@ class RestrictionsAdapter(private val mContext: Context?, private val list: Arra
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: RestrictionsViewHolder, position: Int) {
-//        holder.textView.text = list[position].checkListItem
-//        holder.deleteImg.setOnClickListener {
-//            list.removeAt(position)
-//            notifyDataSetChanged()
-//        }
+        holder.binding.restrictionTv.text = list[position]
+        holder.binding.deleteImg.setOnClickListener {
+            list.removeAt(position)
+            notifyDataSetChanged()
+        }
     }
 }

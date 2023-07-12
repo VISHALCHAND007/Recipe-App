@@ -56,12 +56,15 @@ dependencies {
 
     //circular imageView
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    //gson dependency
+    implementation 'com.google.code.gson:gson:2.9.0'
     
     //room database
     dependencies {
         // Room for simple persistence with an ORM
         ext {
-            roomVersion = "2.1.0"
+            roomVersion = "2.3.0"
         }
 
         dependencies {

@@ -2,8 +2,6 @@ package com.example.recipeapp.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,12 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.recipeapp.activities.MainActivity
 import com.example.recipeapp.adapter.FavouriteAdapter
 import com.example.recipeapp.databinding.FragmentFavouriteBinding
-import com.example.recipeapp.room.FavouriteDao
-import com.example.recipeapp.room.FavouriteDatabase
-import com.example.recipeapp.room.FavouriteEntity
+import com.example.recipeapp.room.entity.FavouriteEntity
 import com.example.recipeapp.viewModel.FavouriteViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

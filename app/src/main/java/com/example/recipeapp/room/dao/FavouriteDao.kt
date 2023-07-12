@@ -1,10 +1,11 @@
-package com.example.recipeapp.room
+package com.example.recipeapp.room.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import com.example.recipeapp.room.entity.FavouriteEntity
 
 @Dao
 interface FavouriteDao {
