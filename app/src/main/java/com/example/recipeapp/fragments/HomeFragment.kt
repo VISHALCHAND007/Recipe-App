@@ -85,10 +85,12 @@ class HomeFragment : Fragment() {
                                 // Create an Ingredients list
                                 val ingredients = mutableListOf<Pair<String, String>>()
                                 for (j in 1..20) {
-                                    val ingredient = jsonObj.getString("strIngredient$j")
-                                    val measure = jsonObj.getString("strMeasure$j")
-                                    if (!ingredient.isNullOrEmpty() && !measure.isNullOrEmpty()) {
-                                        ingredients.add(Pair(ingredient, measure))
+                                    if(jsonObj.get("strIngredient$j") != "null" &&  jsonObj.getString("strMeasure$j") != "null") {
+                                        val ingredient = jsonObj.getString("strIngredient$j")
+                                        val measure = jsonObj.getString("strMeasure$j")
+                                        if (!ingredient.isNullOrEmpty() && !measure.isNullOrEmpty()) {
+                                            ingredients.add(Pair(ingredient, measure))
+                                        }
                                     }
                                 }
                                 var exists = false

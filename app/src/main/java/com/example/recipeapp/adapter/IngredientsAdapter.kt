@@ -26,7 +26,7 @@ class IngredientsAdapter(private val mContext: Context, private val mList: List<
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: IngredientsViewHolder, position: Int) {
         val item = mList[position]
-        if(item.first != "null" && item.second != "null") {
+        if((item.first != "null" && item.second != "null") && (item.first != "" && item.second != "")) {
             holder.binding.ingredientTv.text = item.first
             holder.binding.quantityTv.text = "-> ${item.second}"
         }

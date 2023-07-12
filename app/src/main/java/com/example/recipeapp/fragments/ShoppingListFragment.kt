@@ -12,6 +12,7 @@ import com.example.recipeapp.adapter.ShoppingListAdapter
 import com.example.recipeapp.databinding.FragmentShoppingListBinding
 import com.example.recipeapp.room.entity.ShoppingListEntity
 import com.example.recipeapp.room.entity.WeeklyPlanEntity
+import com.example.recipeapp.utils.Helper
 import com.example.recipeapp.viewModel.ShoppingListViewModel
 import com.example.recipeapp.viewModel.WeeklyMealViewModel
 
@@ -66,6 +67,7 @@ class ShoppingListFragment : Fragment() {
                         )
                         viewModel.delete(shoppingListEntity.mealName)
                         viewModelWeeklyPlan.insert(itemEntity)
+                        Helper().makeToast(requireContext(), "Saved in Weekly Meal Plan")
                     }
 
                     override fun onAddClicked(ingredient: Pair<String, String>) {
