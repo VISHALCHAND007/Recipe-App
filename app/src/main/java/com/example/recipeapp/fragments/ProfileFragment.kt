@@ -23,6 +23,7 @@ class ProfileFragment : Fragment() {
     private lateinit var viewModel: ProfileViewModel
     private var doUpdate: Boolean = false
     private lateinit var cuisineType: String
+    private var setData:Boolean = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,8 +46,11 @@ class ProfileFragment : Fragment() {
 
         val job = lifecycleScope.launch(Dispatchers.IO) {
             val item = viewModel.getData()
-           mListRestrictions = item[0].dietaryRestrictions
-            cuisineType = item[0].cuisineType
+            if (item.isNotEmpty()) {
+                setData = true
+                mListRestrictions = item[0].dietaryRestrictions
+                cuisineType = item[0].cuisineType
+            }
         }
         runBlocking {
             job.join()
@@ -58,11 +62,13 @@ class ProfileFragment : Fragment() {
         if (mListRestrictions.isEmpty()) {
             binding.noDataTv.visibility = View.VISIBLE
         } else {
-            binding.noDataTv.visibility = View.GONE
-            for(i in 0..8) {
-                if(binding.cuisineType.getItemAtPosition(i) == cuisineType) {
-                    binding.cuisineType.setSelection(i)
-                    break
+            if(setData) {
+                binding.noDataTv.visibility = View.GONE
+                for (i in 0..8) {
+                    if (binding.cuisineType.getItemAtPosition(i) == cuisineType) {
+                        binding.cuisineType.setSelection(i)
+                        break
+                    }
                 }
             }
             setData()
@@ -111,6 +117,7 @@ class ProfileFragment : Fragment() {
             }
         }
     }
+
     private fun setData() {
         binding.dietaryRestrictionsRv.adapter =
             RestrictionsAdapter(requireContext(), mListRestrictions)
